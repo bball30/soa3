@@ -36,8 +36,8 @@ public class StudyGroupsController {
         return ResponseEntity.ok("PONG");
     }
 
-    @GetMapping("/{id}/")
-    public ResponseEntity<?> GetStudyGroup(@PathVariable("id") Long id)
+    @GetMapping("/{id}")
+    public ResponseEntity<?> GetStudyGroup(@PathVariable(name = "id") long id)
             throws StudyGroupDoesNotExistException {
         Optional<StudyGroupEntity> maybeStudyGroup = studyGroupService.getById(id);
         if (maybeStudyGroup.isEmpty()) {
@@ -46,10 +46,10 @@ public class StudyGroupsController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(maybeStudyGroup.get());
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<?> getStudyGroups(
-            @RequestParam("filter") List<String> filters,
-            @RequestParam("sort") List<String> sorts,
+            @RequestParam("filter") @DefaultValue("") List<String> filters,
+            @RequestParam("sort") @DefaultValue("") List<String> sorts,
             @RequestParam("page") @Valid @Positive(message = "page must be positive") @DefaultValue("1") int page,
             @RequestParam("size") @Valid @Positive(message = "size must be positive") @DefaultValue("25") int size
     ) throws WrongFilterException {
@@ -57,24 +57,24 @@ public class StudyGroupsController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(studyGroups);
     }
 
-    @DeleteMapping("/{id}/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStudyGroup(
-            @PathVariable("id") @Valid @Positive(message = "id must be positive") Long id)
+            @PathVariable(name = "id") @Valid @Positive(message = "id must be positive") long id)
             throws StudyGroupDoesNotExistException {
         studyGroupService.deleteById(id);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("successful");
     }
 
-    @PutMapping("/{id}/")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateStudyGroup(
-            @PathVariable("id") @Valid @Positive(message = "id must be positive") Long id,
+            @PathVariable(name = "id") @Valid @Positive(message = "id must be positive") long id,
             @RequestBody @NotNull(message = "Study group must not be null") @Valid StudyGroupBase studyGroup)
             throws ChangeSetPersister.NotFoundException {
         StudyGroupEntity updatedStudyGroup = studyGroupService.updateById(id, studyGroup);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(updatedStudyGroup);
     }
     
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<?> createStudyGroup(@RequestBody @NotNull(message = "Study group must not be null") StudyGroupBase studyGroup) {
         Optional<StudyGroupEntity> maybeCreatedStudyGroup = studyGroupService.create(studyGroup);
         if (maybeCreatedStudyGroup.isEmpty()) {
@@ -96,7 +96,7 @@ public class StudyGroupsController {
     }
 
     @DeleteMapping("/student-count/{studentCount}")
-    public ResponseEntity<?> deleteAllByStudentCount(@NotNull(message = "studentCount must not be null") @PathVariable("studentCount") Long studentCount) {
+    public ResponseEntity<?> deleteAllByStudentCount(@NotNull(message = "studentCount must not be null") @PathVariable(name = "studentCount") Long studentCount) {
         int countDeleted = studyGroupService.deleteAllByStudentCount(studentCount);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new DeleteAllByStudentCountResponse(countDeleted));
     }
