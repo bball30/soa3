@@ -48,10 +48,10 @@ public class StudyGroupsController {
 
     @GetMapping("")
     public ResponseEntity<?> getStudyGroups(
-            @RequestParam("filter") @DefaultValue("") List<String> filters,
-            @RequestParam("sort") @DefaultValue("") List<String> sorts,
-            @RequestParam("page") @Valid @Positive(message = "page must be positive") @DefaultValue("1") int page,
-            @RequestParam("size") @Valid @Positive(message = "size must be positive") @DefaultValue("25") int size
+            @RequestParam(name = "filter", required = false) @DefaultValue("") List<String> filters,
+            @RequestParam(name = "sort", required = false) @DefaultValue("") List<String> sorts,
+            @RequestParam(name = "page", defaultValue = "1") @Valid @Positive(message = "page must be positive") Integer page,
+            @RequestParam(name = "size", defaultValue = "5") @Valid @Positive(message = "size must be positive") Integer size
     ) throws WrongFilterException {
         List<StudyGroupEntity> studyGroups = studyGroupService.findAll(filters, sorts, page, size);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(studyGroups);

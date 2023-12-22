@@ -67,16 +67,16 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     @Transactional
     public List<StudyGroupEntity> findAll(List<String> rawFilters, List<String> sorts, int page, int size) throws WrongFilterException {
 
-        for (String rawFilter : rawFilters) {
-            if (!rawFilter.matches(STUDY_GROUP_VALIDATION_EXPRESSION)) {
-                throw new WrongFilterException(rawFilter);
-            }
-        }
+//        for (String rawFilter : rawFilters) {
+//            if (!rawFilter.matches(STUDY_GROUP_VALIDATION_EXPRESSION)) {
+//                throw new WrongFilterException(rawFilter);
+//            }
+//        }
 
-        List<Filter> filters = rawFilters.stream().map(filter -> {
-            String[] parts = filter.split(":");
-            return new Filter(parts[0], parts[1]);
-        }).toList();
+//        List<Filter> filters = rawFilters.stream().map(filter -> {
+//            String[] parts = filter.split(":");
+//            return new Filter(parts[0], parts[1]);
+//        }).toList();
 
         return studyGroupRepo.findAll();
     }
