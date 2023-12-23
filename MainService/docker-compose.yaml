@@ -3,7 +3,7 @@ services:
     image: postgres:14.5
     container_name: soa
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=1234
       - POSTGRES_USER=postgres

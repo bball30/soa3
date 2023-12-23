@@ -1,0 +1,81 @@
+services:
+  db:
+    image: postgres:14.5
+    container_name: soa-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=soa
+    command: postgres -p 5432
+    networks:
+      - develop
+
+  consul:
+    image: consul:1.15.4
+    container_name: consul
+    ports:
+      - "8500:8500"
+    networks:
+      develop:
+        ipv4_address: 172.20.10.1
+
+  main-service-1:
+    image: bball30/main-service
+    container_name: main-service-1
+    depends_on:
+      - db
+      - consul
+    environment:
+      - DATABASE_HOST=soa-db
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=1234
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+    networks:
+      develop:
+        ipv4_address: 172.20.1.1
+    ports:
+      - "8000:8000"
+
+  main-service-2:
+    image: bball30/main-service
+    container_name: main-service-2
+    depends_on:
+      - db
+      - consul
+    environment:
+      - DATABASE_HOST=soa-db
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=1234
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+    networks:
+      develop:
+        ipv4_address: 172.20.1.2
+    ports:
+      - "9000:8000"
+
+  haproxy:
+    image: "haproxy:2.2-alpine"
+    container_name: haproxy
+    depends_on:
+      - main-service-1
+      - main-service-2
+    ports:
+      - "10000:10000"
+      - "10100:10100"
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    networks:
+      - develop
+
+networks:
+  develop:
+    external:
+      name: develop
+
+# docker network create develop --subnet=172.20.0.0/16

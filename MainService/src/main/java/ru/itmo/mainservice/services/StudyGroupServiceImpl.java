@@ -3,6 +3,7 @@ package ru.itmo.mainservice.services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.itmo.mainservice.DTO.Filter;
 import ru.itmo.mainservice.DTO.StudyGroupBase;
@@ -78,7 +79,7 @@ public class StudyGroupServiceImpl implements StudyGroupService {
 //            return new Filter(parts[0], parts[1]);
 //        }).toList();
 
-        return studyGroupRepo.findAll();
+        return studyGroupRepo.findAll(PageRequest.of(page - 1, size)).toList();
     }
 
 
